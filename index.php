@@ -12,7 +12,8 @@ try {
 
             echo  "{$row ['title']} <br>";
             echo " {$row ['content']} <br>";
-            echo  "<img src= image/{$row ['image']}<br> <hr>";
+            echo  "<img src= image/{$row ['image']}<br>";
+            echo "<a href='#'>Update</a> <a href='#'>Delete</a><br><hr>";
         }
     } else {
         echo "No posts found";
