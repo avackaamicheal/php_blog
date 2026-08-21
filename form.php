@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('database.php');
+$pdo= include_once 'database.php';
     if(isset($_POST['submit'])){
         $title = $_POST['title'];
         $content = $_POST['content'];
@@ -13,15 +13,26 @@ include_once('database.php');
         }
 
         try{
-            $sql = "insert into posts(title, content, image) values ('$title', '$content', '$name')";
+            $sql = "INSERT INTO posts(title, content, image) VALUES (:title, :content, :name)";
 
-            $result = $conn->query($sql);
+            $stmt= $pdo->prepare($sql);
+
+            $stmt->bindparam(':title', $title);
+            $stmt->bindparam(':content', $content);
+            $stmt->bindparam(':name', $name);
+
+            $result = $stmt->execute();
+
+
+
 
             if($result){
                 echo 'Post added successfully';
+                
+                header('Location:index.php');
             }
         } catch(PDOException $e) {
-            echo "Error: " . $e->getMessage();    
+            echo "Error: " . $e->getMessage();     
     }
     }
 ?>
@@ -31,10 +42,10 @@ include_once('database.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Add Post</title>
 </head>
 <body>
-    <form action="form.php" method="POST" enctype="multipart/form-data">
+    <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST" enctype="multipart/form-data">
         title: <input type="text" name="title" placeholder="Post title here..." required> <br>
         Content: <textarea name="content" id="content" placeholder="Post content here..." required></textarea> <br>
         Image: <input type="file" name="image"> <br>
