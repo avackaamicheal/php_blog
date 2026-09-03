@@ -3,7 +3,9 @@ session_start();
 $pdo = include_once 'database.php';
 
 if (isset($_POST['submit'])){
+
     $email = $_POST['email'];
+
     $password = $_POST['password'];
 
     $sql = "SELECT * FROM users WHERE email = :email";
@@ -14,9 +16,11 @@ if (isset($_POST['submit'])){
 
     $stmt->execute();
 
+        //fetch as an associative array
     $result =$stmt->fetch(PDO::FETCH_ASSOC);
 
     $user = $result['email'];
+    
     $password_hash= $result['password'];
 
         // check user and password match
@@ -27,8 +31,13 @@ if (isset($_POST['submit'])){
         
         $_SESSION['email'] = $user;
         $_SESSION['user_id'] = $result['id'];
+        $_SESSION['role'] = $result['role'];
+        $_SESSION['name'] = $result['first_name'] ." ". $result['Last_name'];
+    
         
-        echo "Logged in successfully";
+        echo "Logged in successfully  <a href='dashboard.php'>Dashboard</a>";
+
+        //header('Location:index.php');
         
         } else{
             

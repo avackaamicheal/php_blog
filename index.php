@@ -2,25 +2,31 @@
 session_start();
 include_once('database.php');
 
-try {
-    $sql = "select * from posts";
-    $result = $conn->query($sql);
+if ($_SESSION['user_id']) {
 
-    if($result->rowCount()>0){
+    try {
+        $sql = "SELECT * FROM posts";
+        $result = $conn->query($sql);
 
-        while($row=$result->fetch()){
+        if ($result->rowCount() > 0) {
 
-            echo  "{$row ['title']} <br>";
-            echo " {$row ['content']} <br>";
-            echo  '<img src= "image/'. $row ['image'].'" style= "height:100px; width: 100px;"><br>';
-            echo "<a href='edit.php?post_id={$row['id']}'>Edit</a> <a href='delete.php?post_id={$row['id']}'>Delete</a><br><hr>";
+            while ($row = $result->fetch()) {
+
+                echo "{$row['title']} <br>";
+                echo " {$row['content']} <br>";
+                echo '<img src= "image/' . $row['image'] . '" style= "height:100px; width: 100px;"><br>';
+                echo "<a href='edit.php?post_id={$row['id']}'>Edit</a> <a href='delete.php?post_id={$row['id']}'>Delete</a><br><hr>";
+            }
+        } else {
+            echo "No posts found";
         }
-    } else {
-        echo "No posts found";
+
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
 
-} catch(PDOException $e) {
-  echo "Error: " . $e->getMessage();
+} else{
+    header('Location: login.php');
 }
 
 $conn = null;
